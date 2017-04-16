@@ -1,21 +1,16 @@
 package com.kota65535.intellij.plugin.keymap.exporter2;
 
 import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.actionSystem.ex.ActionManagerEx;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.keymap.Keymap;
 import com.intellij.openapi.keymap.KeymapUtil;
 import com.intellij.openapi.keymap.ex.KeymapManagerEx;
-import com.intellij.openapi.util.SystemInfo;
-import org.intellij.lang.annotations.JdkConstants;
-import org.jetbrains.annotations.NonNls;
+import com.kota65535.intellij.plugin.keymap.exporter2.ExportKeymapAction;
+import com.kota65535.intellij.plugin.keymap.exporter2.sheet.KeyboardWorkbook;
 
 import javax.swing.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,11 +26,12 @@ public class KeyboardWorkbookWriter {
 
 
     public KeyboardWorkbookWriter(String fileName, Keymap keymap) {
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
         try {
-            workbook = new KeyboardWorkbook(ClassLoader.getSystemClassLoader().getResourceAsStream(fileName));
-        } catch (IOException exception) {
-            logger.error("Cannot read file %s", fileName);
-            return;
+            workbook = new KeyboardWorkbook(is);
+        } catch (Exception ex) {
+            System.out.println("Failed to load " + fileName);
+            ex.printStackTrace();
         }
         this.keymap = keymap;
 

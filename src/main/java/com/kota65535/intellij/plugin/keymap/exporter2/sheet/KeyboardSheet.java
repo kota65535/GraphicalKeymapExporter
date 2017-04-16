@@ -1,4 +1,4 @@
-package com.kota65535.intellij.plugin.keymap.exporter2;
+package com.kota65535.intellij.plugin.keymap.exporter2.sheet;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -7,14 +7,13 @@ import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static java.util.stream.IntStream.range;
-
 /**
+ * Keyboard sheet class
+ *
  * Created by tozawa on 2017/03/07.
  */
 public class KeyboardSheet {
@@ -26,15 +25,16 @@ public class KeyboardSheet {
     }
 
     /**
-     * Get cell of given key.
+     * Get the cell of the given key.
      * @param key the key
      * @param shift whether shift key is pressed
-     * @return
+     * @return cell
      */
-    public Cell getKeyboardCell(String key, boolean shift) {
+    public KeyboardCell getKeyboardCell(String key, boolean shift) {
         List<Cell> cells = findAllStringCells(key);
-        Cell charCell = shift ? cells.get(1) : cells.get(0);
-        return getCell(charCell.getRowIndex() + 1, charCell.getColumnIndex());
+        Cell labelCell = shift ? cells.get(1) : cells.get(0);
+        Cell contentCell = getCell(labelCell.getRowIndex() + 1, labelCell.getColumnIndex());
+        return new KeyboardCell(labelCell, contentCell);
     }
 
     /**
@@ -44,8 +44,18 @@ public class KeyboardSheet {
      * @param value the value
      */
     public void setKeyboardCell(String key, boolean shift, String value) {
-        Cell cell = getKeyboardCell(key, shift);
-        cell.setCellValue(value);
+        KeyboardCell keyboardCell = getKeyboardCell(key, shift);
+        keyboardCell.getContent().setCellValue(value);
+    }
+
+    public void setKeyboardCellColor(String key, boolean shift, XSSFColor color) {
+        KeyboardCell keyboardCell = getKeyboardCell(key, shift);
+        Cell cell = keyboardCell.getContent();
+        XSSFCellStyle style = sheet.getWorkbook().createCellStyle();
+        style.cloneStyleFrom(cell.getCellStyle());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setFillForegroundColor(color);
+        cell.setCellStyle(style);
     }
 
     /**
@@ -55,28 +65,27 @@ public class KeyboardSheet {
      * @param value the value
      * @param color the color
      */
-    public void setKeyboardCell(String key, boolean shift, String value, Color color) {
-        // Set value
-        Cell cell = getKeyboardCell(key, shift);
-        cell.setCellValue(value);
-        // Set color
-        XSSFCellStyle style = sheet.getWorkbook().createCellStyle();
-        style.cloneStyleFrom(cell.getCellStyle());
-        XSSFColor myColor = new XSSFColor(color);
-        style.setFillForegroundColor(myColor);
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        cell.setCellStyle(style);
+    public void setKeyboardCellWithColor(String key, boolean shift, String value, XSSFColor color) {
+        setKeyboardCell(key, shift, value);
+        setKeyboardCellColor(key, shift, color);
     }
 
+
+    /**
+     * get the cell of the given position.
+     * @param numRow row index
+     * @param numColumn column index
+     * @return a cell
+     */
     private Cell getCell(int numRow, int numColumn) {
-        Iterator<Row> rows = sheet.rowIterator();
-        range(0, numRow).forEach(i -> rows.next());
-        Row row = rows.next();
-        Iterator<Cell> cells = row.cellIterator();
-        range(0, numColumn).forEach(i -> cells.next());
-        return cells.next();
+        return sheet.getRow(numRow).getCell(numColumn);
     }
 
+    /**
+     * find cells that have the given string value.
+     * @param string value to search
+     * @return a list of cells
+     */
     private List<Cell> findAllStringCells(String string) {
         List<Cell> matchedCells = new ArrayList<>();
         Iterator<Row> rows = sheet.rowIterator();
@@ -98,6 +107,11 @@ public class KeyboardSheet {
         return matchedCells;
     }
 
+    /**
+     * find the first cell that have the given string value.
+     * @param string value to search
+     * @return a cell
+     */
     private Cell findFirstStringCell(String string) {
         List<Cell> result = findAllStringCells(string);
         return result.get(0);

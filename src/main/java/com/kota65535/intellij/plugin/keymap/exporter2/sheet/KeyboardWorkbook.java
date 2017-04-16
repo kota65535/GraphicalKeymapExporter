@@ -1,6 +1,7 @@
-package com.kota65535.intellij.plugin.keymap.exporter2;
+package com.kota65535.intellij.plugin.keymap.exporter2.sheet;
 
-import org.apache.poi.ss.usermodel.Cell;
+import com.kota65535.intellij.plugin.keymap.exporter2.Modifier;
+import com.kota65535.intellij.plugin.keymap.exporter2.Utils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.swing.*;
@@ -56,7 +57,7 @@ public class KeyboardWorkbook {
      * @param stroke
      * @return
      */
-    public Cell getKeyboardCell(KeyStroke stroke) {
+    public KeyboardCell getKeyboardCell(KeyStroke stroke) {
         KeyboardSheet sheet = getSheet(stroke);
         return sheet.getKeyboardCell(Utils.getKey(stroke), Utils.getModifiers(stroke).contains(Modifier.SHIFT));
     }
@@ -74,6 +75,11 @@ public class KeyboardWorkbook {
     public void save(String fileName) throws IOException {
         FileOutputStream os = new FileOutputStream(fileName);
         workbook.write(os);
+    }
+
+    public static void main(String[] args) throws IOException {
+        InputStream is = KeyboardWorkbook.class.getClassLoader().getResourceAsStream("keymap.xlsx");
+        KeyboardWorkbook book = new KeyboardWorkbook(is);
     }
 
 }

@@ -2,17 +2,14 @@ package com.kota65535.intellij.plugin.keymap.exporter2;
 
 import com.google.common.collect.ImmutableMap;
 import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.keymap.ex.KeymapManagerEx;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.diagnostic.Logger;
 
 import java.awt.*;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static com.kota65535.intellij.plugin.keymap.exporter2.Constants.KEYBOARD_WORKBOOK_NAME;
 
 /**
  * Created by tozawa on 2017/03/04.
@@ -23,32 +20,14 @@ public class ExportKeymapAction extends AnAction {
 
     private static final Logger logger = Logger.getInstance(ExportKeymapAction.class);
 
-
-    private Map<String, Color> groupColorMap = ImmutableMap.<String, Color>builder()
-            .put("FileMenu", Color.BLUE)
-            .put("EditMenu", Color.YELLOW)
-            .put("ViewMenu", Color.YELLOW)
-            .put("GoToMenu", Color.CYAN)
-            .put("CodeMenu", Color.ORANGE)
-            .put("AnalyzeMenu", Color.PINK)
-            .put("RefactoringMenu", Color.RED)
-            .put("BuildMenu", Color.GREEN)
-            .put("RunMenu", Color.GREEN)
-            .put("ToolsMenu", Color.PINK)
-            .put("VCSGroups", Color.BLUE)
-            .put("WindowMenu", Color.BLUE)
-            .build();
-
     private Map<String, Color> actionColorMap = new HashMap<>();
-
-    private final String KEYBOARD_WORKBOOK_NAME = "keymap.xlsx";
 
     @Override
     public void actionPerformed(AnActionEvent e) {
+        // DialogWrapper needs Project object to initialize.
         project = e.getRequiredData(CommonDataKeys.PROJECT);
 
-//        makeActionColorMap();
-
+        // Let users choose the keymap to be exported.
         ExportKeymapDialog d = new ExportKeymapDialog(project);
         if (!d.showAndGet()) {
             return;
