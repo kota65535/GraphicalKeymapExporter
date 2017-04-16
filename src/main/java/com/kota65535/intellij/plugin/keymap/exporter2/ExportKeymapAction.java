@@ -1,4 +1,4 @@
-package com.kota65535;
+package com.kota65535.intellij.plugin.keymap.exporter2;
 
 import com.google.common.collect.ImmutableMap;
 import com.intellij.openapi.actionSystem.*;

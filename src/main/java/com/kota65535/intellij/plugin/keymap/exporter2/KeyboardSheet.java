@@ -1,4 +1,4 @@
-package com.kota65535;
+package com.kota65535.intellij.plugin.keymap.exporter2;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FillPatternType;

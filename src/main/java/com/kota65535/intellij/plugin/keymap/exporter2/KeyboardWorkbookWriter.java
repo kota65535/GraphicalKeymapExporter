@@ -1,4 +1,4 @@
-package com.kota65535;
+package com.kota65535.intellij.plugin.keymap.exporter2;
 
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.actionSystem.ex.ActionManagerEx;
