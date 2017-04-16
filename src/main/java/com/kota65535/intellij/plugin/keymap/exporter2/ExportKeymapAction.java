@@ -44,7 +44,7 @@ public class ExportKeymapAction extends AnAction {
 //                .filter( aid -> actionManager.isGroup(aid))
 //                .collect(Collectors.toList());
 //
-//        // Map all child actions to the color associated with the group
+//        // Map all child actionIds to the color associated with the group
 //        actionGroupIds.forEach( agid -> {
 //            if (groupColorMap.containsKey(agid)) {
 //                Color color = groupColorMap.get(agid);

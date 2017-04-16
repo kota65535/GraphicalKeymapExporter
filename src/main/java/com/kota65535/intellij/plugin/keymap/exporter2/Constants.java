@@ -21,8 +21,9 @@ public class Constants {
             .put("BuildMenu", IndexedColors.GREEN)
             .put("RunMenu", IndexedColors.GREEN)
             .put("ToolsMenu", IndexedColors.PINK)
-            .put("VCSGroups", IndexedColors.BLUE)
+            .put("VcsGroups", IndexedColors.BLUE)
             .put("WindowMenu", IndexedColors.BLUE)
+            .put("HelpMenu", IndexedColors.GREY_25_PERCENT)
             .build();
 
     public static final String KEYBOARD_WORKBOOK_NAME = "keymap.xlsx";
