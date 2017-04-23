@@ -1,5 +1,6 @@
 package com.kota65535.intellij.plugin.keymap.exporter2.sheet;
 
+import com.intellij.openapi.diagnostic.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Row;
@@ -20,6 +21,8 @@ public class KeyboardSheet {
 
     XSSFSheet sheet;
 
+    Logger logger = Logger.getInstance(KeyboardSheet.class);
+
     public KeyboardSheet(XSSFSheet spreadsheet) {
         sheet = spreadsheet;
     }
@@ -32,6 +35,10 @@ public class KeyboardSheet {
      */
     public KeyboardCell getKeyboardCell(String key, boolean shift) {
         List<Cell> cells = findAllStringCells(key);
+        if (cells.isEmpty()) {
+            logger.warn(String.format("Key: '%s' with shift=%s not found", key, shift));
+            return null;
+        }
         Cell labelCell = shift ? cells.get(1) : cells.get(0);
         Cell contentCell = getCell(labelCell.getRowIndex() + 1, labelCell.getColumnIndex());
         return new KeyboardCell(labelCell, contentCell);
@@ -45,17 +52,25 @@ public class KeyboardSheet {
      */
     public void setKeyboardCell(String key, boolean shift, String value) {
         KeyboardCell keyboardCell = getKeyboardCell(key, shift);
-        keyboardCell.getContent().setCellValue(value);
+        if (keyboardCell == null) {
+            logger.warn(String.format("Cannot set key: '%s' with shift=%s", key, shift));
+        } else {
+            keyboardCell.getContent().setCellValue(value);
+        }
     }
 
     public void setKeyboardCellColor(String key, boolean shift, XSSFColor color) {
         KeyboardCell keyboardCell = getKeyboardCell(key, shift);
-        Cell cell = keyboardCell.getContent();
-        XSSFCellStyle style = sheet.getWorkbook().createCellStyle();
-        style.cloneStyleFrom(cell.getCellStyle());
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        style.setFillForegroundColor(color);
-        cell.setCellStyle(style);
+        if (keyboardCell == null) {
+            logger.warn(String.format("Cannot set key color: '%s' with shift=%s", key, shift));
+        } else {
+            Cell cell = keyboardCell.getContent();
+            XSSFCellStyle style = sheet.getWorkbook().createCellStyle();
+            style.cloneStyleFrom(cell.getCellStyle());
+            style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            style.setFillForegroundColor(color);
+            cell.setCellStyle(style);
+        }
     }
 
     /**

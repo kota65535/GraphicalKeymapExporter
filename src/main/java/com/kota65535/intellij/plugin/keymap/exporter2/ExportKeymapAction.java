@@ -1,14 +1,18 @@
 package com.kota65535.intellij.plugin.keymap.exporter2;
 
-import com.google.common.collect.ImmutableMap;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.diagnostic.Logger;
+import com.kota65535.intellij.plugin.keymap.exporter2.xml.ActionGroupTree;
+import org.w3c.dom.Document;
 
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import static com.kota65535.intellij.plugin.keymap.exporter2.Constants.GROUP_2_COLOR;
 import static com.kota65535.intellij.plugin.keymap.exporter2.Constants.KEYBOARD_WORKBOOK_NAME;
 
 /**
@@ -33,9 +37,16 @@ public class ExportKeymapAction extends AnAction {
             return;
         }
 
-        KeyboardWorkbookWriter writer = new KeyboardWorkbookWriter(KEYBOARD_WORKBOOK_NAME, d.getSelectedKeymap());
-        writer.getClass();
+        ActionGroupTree tree = new ActionGroupTree();
+        Document document = tree.createActionGroupTree(GROUP_2_COLOR);
+        tree.write();
+
+        KeyboardWorkbookWriter writer = new KeyboardWorkbookWriter(KEYBOARD_WORKBOOK_NAME, document,
+                "/Users/tozawa/keymap3.xlsx");
+        writer.write();
     }
+
+
 
 
 //    private void makeActionColorMap() {

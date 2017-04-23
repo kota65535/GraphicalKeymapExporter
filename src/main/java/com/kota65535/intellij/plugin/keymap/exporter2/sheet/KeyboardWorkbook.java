@@ -1,5 +1,6 @@
 package com.kota65535.intellij.plugin.keymap.exporter2.sheet;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.kota65535.intellij.plugin.keymap.exporter2.Modifier;
 import com.kota65535.intellij.plugin.keymap.exporter2.Utils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -21,6 +22,8 @@ public class KeyboardWorkbook {
     XSSFWorkbook workbook;
     Map<KeyboardSheetType, KeyboardSheet> sheetMap = new HashMap<>();
 
+    Logger logger = Logger.getInstance(KeyboardWorkbook.class);
+
     public KeyboardWorkbook(InputStream fis) throws IOException {
         workbook = new XSSFWorkbook(fis);
 
@@ -37,14 +40,26 @@ public class KeyboardWorkbook {
         String key = Utils.getKey(stroke);
         EnumSet<Modifier> mods = Utils.getModifiers(stroke);
         KeyboardSheet sheet;
-        if ( mods.contains(Modifier.CTRL) && mods.contains(Modifier.ALT)) {
-            sheet = getSheet(KeyboardSheetType.AltCtrl);
+        if ( mods.containsAll(Arrays.asList(Modifier.CTRL, Modifier.ALT, Modifier.META))) {
+            sheet = getSheet(KeyboardSheetType.CtrlAltMeta);
         }
-        else if ( mods.contains(Modifier.CTRL)) {
-            sheet = getSheet(KeyboardSheetType.Ctrl);
+        else if ( mods.containsAll(Arrays.asList(Modifier.ALT, Modifier.META))) {
+            sheet = getSheet(KeyboardSheetType.AltMeta);
+        }
+        else if ( mods.containsAll(Arrays.asList(Modifier.CTRL, Modifier.META))) {
+            sheet = getSheet(KeyboardSheetType.CtrlMeta);
+        }
+        else if ( mods.containsAll(Arrays.asList(Modifier.CTRL, Modifier.ALT))) {
+            sheet = getSheet(KeyboardSheetType.CtrlAlt);
+        }
+        else if ( mods.contains(Modifier.META)) {
+            sheet = getSheet(KeyboardSheetType.Meta);
         }
         else if ( mods.contains(Modifier.ALT)) {
             sheet = getSheet(KeyboardSheetType.Alt);
+        }
+        else if ( mods.contains(Modifier.CTRL)) {
+            sheet = getSheet(KeyboardSheetType.Ctrl);
         }
         else {
             sheet = getSheet(KeyboardSheetType.NoMod);
@@ -71,6 +86,11 @@ public class KeyboardWorkbook {
         KeyboardSheet sheet = getSheet(stroke);
         sheet.setKeyboardCell(Utils.getKey(stroke), Utils.getModifiers(stroke).contains(Modifier.SHIFT), value);
     }
+
+    public void setKeyboardCell(String strokeText, String value) {
+        sheet.setKeyboardCell(strokeText, Key.getModifiers(strokeText).contains(Modifier.SHIFT), value);
+    }
+
 
     public void save(String fileName) throws IOException {
         FileOutputStream os = new FileOutputStream(fileName);

@@ -11,6 +11,7 @@ import java.util.Map;
 public class Constants {
 
     public static final Map<String, IndexedColors> GROUP_2_COLOR = ImmutableMap.<String, IndexedColors>builder()
+            .put("EditorActions", IndexedColors.BLACK)
             .put("FileMenu", IndexedColors.BLUE)
             .put("EditMenu", IndexedColors.YELLOW)
             .put("ViewMenu", IndexedColors.YELLOW)

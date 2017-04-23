@@ -64,14 +64,7 @@ public class KeyboardWorkbookTest {
         assertThat(cell.getContent().getRowIndex(), is(16));
         assertThat(cell.getContent().getColumnIndex(), is(33));
         assertThat(cell.getContent().getStringCellValue(), is("jjj"));
-
-        sut.setKeyboardCell(KeyStroke.getKeyStroke("alt J"), "kkk");
-        cell = sut.getKeyboardCell(KeyStroke.getKeyStroke("alt J"));
-        assertThat(cell.getLabel().getRowIndex(), is(15));
-        assertThat(cell.getLabel().getColumnIndex(), is(33));
-        assertThat(cell.getContent().getRowIndex(), is(16));
-        assertThat(cell.getContent().getColumnIndex(), is(33));
-        assertThat(cell.getContent().getStringCellValue(), is("kkk"));
     }
+
 
 }

@@ -7,7 +7,11 @@ public enum KeyboardSheetType {
     NoMod(0),
     Ctrl(1),
     Alt(2),
-    AltCtrl(3),
+    Meta(3),
+    CtrlAlt(4),
+    CtrlMeta(5),
+    AltMeta(6),
+    CtrlAltMeta(7)
     ;
 
     private int page;

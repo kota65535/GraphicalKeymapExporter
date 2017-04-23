@@ -1,18 +1,25 @@
 package com.kota65535.intellij.plugin.keymap.exporter2;
 
+import com.google.common.collect.Sets;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.keymap.Keymap;
 import com.intellij.openapi.keymap.KeymapUtil;
 import com.intellij.openapi.keymap.ex.KeymapManagerEx;
 import com.kota65535.intellij.plugin.keymap.exporter2.sheet.KeyboardWorkbook;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.kota65535.intellij.plugin.keymap.exporter2.Constants.GROUP_2_COLOR;
@@ -27,80 +34,128 @@ public class KeyboardWorkbookWriter {
     private Keymap keymap;
     private static final Logger logger = Logger.getInstance(ExportKeymapAction.class);
 
-    List<String> actionGroupIds;
-    List<String> actionIds;
-    Map<String, List<AnAction>> groupToAllChildren;
+    Document document;
+    String outputFileName;
 
-    public KeyboardWorkbookWriter(String fileName, Keymap keymap) {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
+
+    public KeyboardWorkbookWriter(String inputFileName, Document document, String outputFileName) {
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream(inputFileName);
         try {
             workbook = new KeyboardWorkbook(is);
         } catch (Exception ex) {
-            System.out.println("Failed to load " + fileName);
+            System.out.println("Failed to load " + inputFileName);
             ex.printStackTrace();
         }
-        this.keymap = keymap;
-
-        // Get all action group IDs.
-        actionGroupIds = Arrays.stream(actionManager.getActionIds(""))
-                .filter( aid -> actionManager.isGroup(aid))
-                .collect(Collectors.toList());
-
-        // Get all action IDs.
-        actionIds = Arrays.stream(actionManager.getActionIds(""))
-                .filter( aid -> ! actionManager.isGroup(aid))
-                .collect(Collectors.toList());
-
-//        List<AnAction> actions = actionIds.stream()
-//                .map( id -> actionManager.getAction(id))
-//                .collect(Collectors.toList());
-//
-//        List<ActionGroup> actionGroups = actionGroupIds.stream()
-//                .map( id -> (ActionGroup)actionManager.getAction(id))
-//                .collect(Collectors.toList());
-
-        // Make map of group IDs associated with their all children.
-        groupToAllChildren = GROUP_2_COLOR.entrySet().stream()
-                .collect(Collectors.toMap(
-                        e -> e.getKey(),
-                        e -> {
-                            ActionGroup group = (ActionGroup)actionManager.getAction(e.getKey());
-                            List<AnAction> as = getAllChildActions(group);
-                            return as;
-                        }
-                ));
+        this.document = document;
+        this.outputFileName = outputFileName;
     }
 
-    public void write() {
-        groupToAllChildren.entrySet().stream()
-                .
 
-    }
-
-    private List<AnAction> getAllChildActions(@Nonnull ActionGroup group) {
-        AnAction[] actions = group.getChildren(null);
-
-        List<AnAction> childActions = Arrays.stream(actions)
-                .filter( a -> ! (a instanceof ActionGroup))
-                .collect(Collectors.toList());
-
-        List<ActionGroup> childActionGroups = Arrays.stream(actions)
-                .filter( a -> a instanceof ActionGroup)
-                .map( a -> (ActionGroup)a)
-                .collect(Collectors.toList());
-
-        if ( childActionGroups.size() > 0) {
-            List<AnAction> recursiveChildActions = childActionGroups.stream()
-                    .flatMap( ag -> this.getAllChildActions(ag).stream())
-                    .collect(Collectors.toList());
-            childActions.addAll(recursiveChildActions);
+    private Map<String, Set<String>> getKey2Actions() {
+        Map<String, Set<String>> key2Actions = new HashMap<>();
+        NodeList nodeList = document.getElementsByTagName("action");
+        for (int i=0 ; i < nodeList.getLength() ; i++) {
+            Element elem = (Element) nodeList.item(i);
+            String keyStroke = elem.getAttribute("key");
+            if (key2Actions.get(keyStroke) != null) {
+                Set<String> newList = key2Actions.get(keyStroke);
+                newList.add(elem.getAttribute("id"));
+                key2Actions.put(keyStroke, newList);
+            } else {
+                key2Actions.put(keyStroke, Sets.newHashSet(elem.getAttribute("id")));
+            }
         }
 
-        return childActions;
+        return key2Actions;
     }
 
 
-//    /**
+    private Map<String, Set<String>> getKey2MainActions(int threshold) {
+        Map<String, Set<String>> key2Actions = getKey2Actions();
+
+        return key2Actions.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> {
+                            if (entry.getValue().size() > threshold) {
+                                Set<String> actionSet = entry.getValue();
+                                return actionSet.stream()
+                                        .filter(a -> isGroupOf(a, "MainMenu"))
+                                        .collect(Collectors.toSet());
+                            } else {
+                                return entry.getValue();
+                            }
+                        }));
+    }
+
+
+    private boolean isGroupOf(String childId, String ancestorId) {
+
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        String expression = String.format("/root//group[@id='%s']//action[@id='%s']", ancestorId, childId);
+        try {
+            Node widgetNode = (Node) xpath.evaluate(expression, document, XPathConstants.NODE);
+            if (widgetNode != null) {
+                return true;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+
+
+    public void write() {
+        Map<String, Set<String>> key2MainAct = getKey2MainActions(2);
+
+        key2MainAct.forEach( (key, actions) -> {
+            actions.forEach( a -> {
+                MacKeymapUtil.getModifiers(key);
+                    }
+                workbook.setKeyboardCell(key, a);
+
+                }
+
+        workbook.setKeyboardCell(keyboardShortcut.getFirstKeyStroke(),
+                                action.getTemplatePresentation().getText());
+
+
+
+
+//        GROUP_2_COLOR.entrySet().forEach( entry -> {
+//            List<AnAction> actions = groupToAllChildren.get(entry.getKey());
+//            actions.forEach(action -> {
+//                Arrays.stream(action.getShortcutSet().getShortcuts()).forEach(shortcut -> {
+//                    if (shortcut instanceof KeyboardShortcut) {
+//                        KeyboardShortcut keyboardShortcut = (KeyboardShortcut)shortcut;
+//                        logger.info(String.format("group: %s, color: %s, text: %s, key: %s",
+//                                entry.getKey(),
+//                                entry.getValue().name(),
+//                                action.getTemplatePresentation().getText(),
+//                                KeymapUtil.getKeystrokeText(keyboardShortcut.getFirstKeyStroke())));
+//                        workbook.setKeyboardCell(keyboardShortcut.getFirstKeyStroke(),
+//                                action.getTemplatePresentation().getText());
+//                    }
+//                    else if (shortcut instanceof KeyboardModifierGestureShortcut) {
+//                        KeyboardModifierGestureShortcut keyboardShortcut = (KeyboardModifierGestureShortcut)shortcut;
+//                        logger.info(String.format("group: %s, color: %s, text: %s, key: %s",
+//                                entry.getKey(),
+//                                entry.getValue().name(),
+//                                action.getTemplatePresentation().getText(),
+//                                KeymapUtil.getKeystrokeText(keyboardShortcut.getStroke())));
+//                    }
+//                });
+//            });
+//        });
+//        try {
+//            workbook.save(outputFileName);
+//            logger.info(String.format("Successfully write file %s", outputFileName));
+//        } catch (IOException ex) {
+//            logger.error(String.format("Failed to write file", outputFileName), ex);
+//        }
+    }
+
 //     * generate KeyStroke-to-Action map
 //     */
 //    public void makeActionToColorMap() {
