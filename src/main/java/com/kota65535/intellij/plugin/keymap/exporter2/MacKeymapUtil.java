@@ -64,7 +64,7 @@ public class MacKeymapUtil {
     public static String stripModifiers(String keyText) {
         String result = new String(keyText);
         EnumSet<MacKey> mods = EnumSet.of(MacKey.SHIFT, MacKey.CONTROL, MacKey.OPTION, MacKey.COMMAND);
-        for(MacKey v : MacKey.values()) {
+        for(MacKey v : mods) {
             result = result.replace(v.getOriginalString(), "");
         }
         return result;

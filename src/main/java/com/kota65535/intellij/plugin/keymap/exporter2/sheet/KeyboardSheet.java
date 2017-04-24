@@ -1,9 +1,11 @@
 package com.kota65535.intellij.plugin.keymap.exporter2.sheet;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.text.StringUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -34,14 +36,16 @@ public class KeyboardSheet {
      * @return cell
      */
     public KeyboardCell getKeyboardCell(String key, boolean shift) {
+        if (StringUtil.isEmpty(key)) {
+            return null;
+        }
         List<Cell> cells = findAllStringCells(key);
         if (cells.isEmpty()) {
             logger.warn(String.format("Key: '%s' with shift=%s not found", key, shift));
             return null;
         }
         Cell labelCell = shift ? cells.get(1) : cells.get(0);
-        Cell contentCell = getCell(labelCell.getRowIndex() + 1, labelCell.getColumnIndex());
-        return new KeyboardCell(labelCell, contentCell);
+        return new KeyboardCell(sheet, labelCell);
     }
 
     /**
@@ -55,35 +59,51 @@ public class KeyboardSheet {
         if (keyboardCell == null) {
             logger.warn(String.format("Cannot set key: '%s' with shift=%s", key, shift));
         } else {
-            keyboardCell.getContent().setCellValue(value);
+            keyboardCell.setBody(value);
         }
     }
 
-    public void setKeyboardCellColor(String key, boolean shift, XSSFColor color) {
+    public void setKeyboardCell(String key, boolean shift, String first, String second) {
         KeyboardCell keyboardCell = getKeyboardCell(key, shift);
         if (keyboardCell == null) {
-            logger.warn(String.format("Cannot set key color: '%s' with shift=%s", key, shift));
+            logger.warn(String.format("Cannot set key: '%s' with shift=%s", key, shift));
         } else {
-            Cell cell = keyboardCell.getContent();
-            XSSFCellStyle style = sheet.getWorkbook().createCellStyle();
-            style.cloneStyleFrom(cell.getCellStyle());
-            style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-            style.setFillForegroundColor(color);
-            cell.setCellStyle(style);
+            keyboardCell.setBodies(first, second);
         }
     }
 
-    /**
-     * Set value and color for the cell of the key.
-     * @param key the key
-     * @param shift whether shift key is present
-     * @param value the value
-     * @param color the color
-     */
-    public void setKeyboardCellWithColor(String key, boolean shift, String value, XSSFColor color) {
-        setKeyboardCell(key, shift, value);
-        setKeyboardCellColor(key, shift, color);
-    }
+//    public void setKeyboardCellColor(String key, boolean shift, XSSFColor color1, XSSFColor color2) {
+//        KeyboardCell keyboardCell = getKeyboardCell(key, shift);
+//        if (keyboardCell == null) {
+//            logger.warn(String.format("Cannot set key color: '%s' with shift=%s", key, shift));
+//        } else {
+//            keyboardCell.setBodies()
+//            Cell cell = keyboardCell.getBody();
+//            XSSFCellStyle style = sheet.getWorkbook().createCellStyle();
+//            style.cloneStyleFrom(cell.getCellStyle());
+//            style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//            style.setFillForegroundColor(color1);
+//            cell.setCellStyle(style);
+//            cell = keyboardCell.getSecondBody();
+//            style = sheet.getWorkbook().createCellStyle();
+//            style.cloneStyleFrom(cell.getCellStyle());
+//            style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+//            style.setFillForegroundColor(color2);
+//            cell.setCellStyle(style);
+//        }
+//    }
+//
+//    /**
+//     * Set value and color for the cell of the key.
+//     * @param key the key
+//     * @param shift whether shift key is present
+//     * @param value the value
+//     * @param color the color
+//     */
+//    public void setKeyboardCellWithColor(String key, boolean shift, String value, XSSFColor color) {
+//        setKeyboardCell(key, shift, value);
+//        setKeyboardCellColor(key, shift, color);
+//    }
 
 
     /**

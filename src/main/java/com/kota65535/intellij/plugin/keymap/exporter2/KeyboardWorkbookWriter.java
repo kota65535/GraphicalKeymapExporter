@@ -38,6 +38,7 @@ public class KeyboardWorkbookWriter {
     String outputFileName;
 
 
+
     public KeyboardWorkbookWriter(String inputFileName, Document document, String outputFileName) {
         InputStream is = this.getClass().getClassLoader().getResourceAsStream(inputFileName);
         try {
@@ -51,10 +52,11 @@ public class KeyboardWorkbookWriter {
     }
 
 
+
     private Map<String, Set<String>> getKey2Actions() {
         Map<String, Set<String>> key2Actions = new HashMap<>();
         NodeList nodeList = document.getElementsByTagName("action");
-        for (int i=0 ; i < nodeList.getLength() ; i++) {
+        for (int i = 0; i < nodeList.getLength(); i++) {
             Element elem = (Element) nodeList.item(i);
             String keyStroke = elem.getAttribute("key");
             if (key2Actions.get(keyStroke) != null) {
@@ -105,22 +107,26 @@ public class KeyboardWorkbookWriter {
     }
 
 
-
     public void write() {
         Map<String, Set<String>> key2MainAct = getKey2MainActions(2);
 
-        key2MainAct.forEach( (key, actions) -> {
-            actions.forEach( a -> {
-                MacKeymapUtil.getModifiers(key);
-                    }
-                workbook.setKeyboardCell(key, a);
+        key2MainAct.forEach((key, value) -> {
+            List<String> list = new ArrayList<>(value);
+            if (value.size() == 2) {
+                workbook.setKeyboardCell(key, list.get(0), list.get(1));
+            } else if (value.size() == 1) {
+                workbook.setKeyboardCell(key, list.get(0));
+            }
+        });
 
-                }
-
-        workbook.setKeyboardCell(keyboardShortcut.getFirstKeyStroke(),
-                                action.getTemplatePresentation().getText());
-
-
+        try {
+            workbook.save(outputFileName);
+            logger.info(String.format("Successfully write file %s", outputFileName));
+        } catch (IOException ex) {
+            logger.error(String.format("Failed to write file", outputFileName), ex);
+        }
+    }
+}
 
 
 //        GROUP_2_COLOR.entrySet().forEach( entry -> {
@@ -154,7 +160,7 @@ public class KeyboardWorkbookWriter {
 //        } catch (IOException ex) {
 //            logger.error(String.format("Failed to write file", outputFileName), ex);
 //        }
-    }
+
 
 //     * generate KeyStroke-to-Action map
 //     */
@@ -214,4 +220,4 @@ public class KeyboardWorkbookWriter {
 //            });
 //        }
 //    });
-}
+//}

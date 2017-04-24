@@ -1,6 +1,7 @@
 package com.kota65535.intellij.plugin.keymap.exporter2.sheet;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.kota65535.intellij.plugin.keymap.exporter2.MacKeymapUtil;
 import com.kota65535.intellij.plugin.keymap.exporter2.Modifier;
 import com.kota65535.intellij.plugin.keymap.exporter2.Utils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -36,9 +37,8 @@ public class KeyboardWorkbook {
         return sheetMap.get(type);
     }
 
-    public KeyboardSheet getSheet(KeyStroke stroke) {
-        String key = Utils.getKey(stroke);
-        EnumSet<Modifier> mods = Utils.getModifiers(stroke);
+
+    public KeyboardSheet getSheet(EnumSet<Modifier> mods) {
         KeyboardSheet sheet;
         if ( mods.containsAll(Arrays.asList(Modifier.CTRL, Modifier.ALT, Modifier.META))) {
             sheet = getSheet(KeyboardSheetType.CtrlAltMeta);
@@ -69,26 +69,29 @@ public class KeyboardWorkbook {
 
     /**
      *
-     * @param stroke
      * @return
      */
-    public KeyboardCell getKeyboardCell(KeyStroke stroke) {
-        KeyboardSheet sheet = getSheet(stroke);
-        return sheet.getKeyboardCell(Utils.getKey(stroke), Utils.getModifiers(stroke).contains(Modifier.SHIFT));
+    public KeyboardCell getKeyboardCell(String strokeText) {
+        EnumSet<Modifier> mods = MacKeymapUtil.getModifiers(strokeText);
+        KeyboardSheet sheet = getSheet(mods);
+        return sheet.getKeyboardCell(strokeText, mods.contains(Modifier.SHIFT));
     }
 
     /**
      *
-     * @param stroke
      * @param value
      */
-    public void setKeyboardCell(KeyStroke stroke, String value) {
-        KeyboardSheet sheet = getSheet(stroke);
-        sheet.setKeyboardCell(Utils.getKey(stroke), Utils.getModifiers(stroke).contains(Modifier.SHIFT), value);
+    public void setKeyboardCell(String strokeText, String value) {
+        EnumSet<Modifier> mods = MacKeymapUtil.getModifiers(strokeText);
+        KeyboardSheet sheet = getSheet(mods);
+        sheet.setKeyboardCell(MacKeymapUtil.stripModifiers(strokeText), mods.contains(Modifier.SHIFT), value);
     }
 
-    public void setKeyboardCell(String strokeText, String value) {
-        sheet.setKeyboardCell(strokeText, Key.getModifiers(strokeText).contains(Modifier.SHIFT), value);
+    public void setKeyboardCell(String strokeText, String first, String second) {
+        EnumSet<Modifier> mods = MacKeymapUtil.getModifiers(strokeText);
+        KeyboardSheet sheet = getSheet(mods);
+        System.out.println(strokeText);
+        sheet.setKeyboardCell(MacKeymapUtil.stripModifiers(strokeText), mods.contains(Modifier.SHIFT), first, second);
     }
 
 

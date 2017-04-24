@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -40,17 +41,36 @@ public class KeyboardSheetTest {
 
     @Test
     public void test_getKeyboardCell() {
-        KeyboardCell cell = sut.getKeyboardCell("Y", false);
-        assertThat(cell.getLabel().getRowIndex(), is(11));
-        assertThat(cell.getLabel().getColumnIndex(), is(27));
-        assertThat(cell.getContent().getRowIndex(), is(12));
-        assertThat(cell.getContent().getColumnIndex(), is(27));
+        KeyboardCell cell = sut.getKeyboardCell("Q", false);
+        assertThat(cell.getLabel().getRowIndex(), is(13));
+        assertThat(cell.getLabel().getColumnIndex(), is(7));
+        assertThat(cell.getBody().getRowIndex(), is(14));
+        assertThat(cell.getBody().getColumnIndex(), is(7));
 
-        cell = sut.getKeyboardCell("Y", true);
-        assertThat(cell.getLabel().getRowIndex(), is(38));
-        assertThat(cell.getLabel().getColumnIndex(), is(27));
-        assertThat(cell.getContent().getRowIndex(), is(39));
-        assertThat(cell.getContent().getColumnIndex(), is(27));
+        cell = sut.getKeyboardCell("Q", true);
+        assertThat(cell.getLabel().getRowIndex(), is(46));
+        assertThat(cell.getLabel().getColumnIndex(), is(7));
+        assertThat(cell.getBody().getRowIndex(), is(47));
+        assertThat(cell.getBody().getColumnIndex(), is(7));
+    }
+
+    @Test
+    public void test_getKeyboardCell_merged() {
+        KeyboardCell cell = sut.getKeyboardCell("W", false);
+        assertThat(cell.getLabel().getRowIndex(), is(13));
+        assertThat(cell.getLabel().getColumnIndex(), is(11));
+        assertThat(cell.getBody().getRowIndex(), is(14));
+        assertThat(cell.getBody().getColumnIndex(), is(11));
+        assertThat(cell.getSecondBody().getRowIndex(), is(16));
+        assertThat(cell.getSecondBody().getColumnIndex(), is(11));
+
+        cell = sut.getKeyboardCell("W", true);
+        assertThat(cell.getLabel().getRowIndex(), is(46));
+        assertThat(cell.getLabel().getColumnIndex(), is(11));
+        assertThat(cell.getBody().getRowIndex(), is(47));
+        assertThat(cell.getBody().getColumnIndex(), is(11));
+        assertThat(cell.getSecondBody(), is(nullValue()));
+        assertThat(cell.getSecondBody(), is(nullValue()));
     }
 
     @Test
@@ -59,10 +79,25 @@ public class KeyboardSheetTest {
         KeyboardCell cell = sut.getKeyboardCell("J", false);
         assertThat(cell.getLabel().getRowIndex(), is(15));
         assertThat(cell.getLabel().getColumnIndex(), is(33));
-        assertThat(cell.getContent().getRowIndex(), is(16));
-        assertThat(cell.getContent().getColumnIndex(), is(33));
-        assertThat(cell.getContent().getStringCellValue(), is("aaa"));
+        assertThat(cell.getBody().getRowIndex(), is(16));
+        assertThat(cell.getBody().getColumnIndex(), is(33));
+        assertThat(cell.getBody().getStringCellValue(), is("aaa"));
     }
+
+    @Test
+    public void test_setKeyboardCell_merged() {
+        sut.setKeyboardCell("E", false, "aaa");
+        KeyboardCell cell = sut.getKeyboardCell("E", false);
+        assertThat(cell.getBody().getStringCellValue(), is("aaa"));
+        assertThat(cell.getSecondBody(), is(nullValue()));
+
+        sut.setKeyboardCell("E", false, "bbb", "ccc");
+        cell = sut.getKeyboardCell("E", false);
+        assertThat(cell.getBody().getStringCellValue(), is("bbb"));
+        assertThat(cell.getSecondBody().getStringCellValue(), is("ccc"));
+
+    }
+
 
     @Test
     public void test_setKeyboardCellColor() {
@@ -71,9 +106,9 @@ public class KeyboardSheetTest {
         KeyboardCell cell = sut.getKeyboardCell("J", false);
         assertThat(cell.getLabel().getRowIndex(), is(15));
         assertThat(cell.getLabel().getColumnIndex(), is(33));
-        assertThat(cell.getContent().getRowIndex(), is(16));
-        assertThat(cell.getContent().getColumnIndex(), is(33));
-        assertThat(cell.getContent().getCellStyle().getFillForegroundColor(), is(IndexedColors.BLUE.getIndex()));
+        assertThat(cell.getBody().getRowIndex(), is(16));
+        assertThat(cell.getBody().getColumnIndex(), is(33));
+        assertThat(cell.getBody().getCellStyle().getFillForegroundColor(), is(IndexedColors.BLUE.getIndex()));
     }
 
 }
