@@ -99,16 +99,30 @@ public class KeyboardSheetTest {
     }
 
 
-    @Test
-    public void test_setKeyboardCellColor() {
-        sut.setKeyboardCellColor("J", false, new XSSFColor(IndexedColors.BLUE));
+//    @Test
+//    public void test_setKeyboardCellColor() {
+//        sut.setKeyboardCellColor("J", false, new XSSFColor(IndexedColors.BLUE));
+//
+//        KeyboardCell cell = sut.getKeyboardCell("J", false);
+//        assertThat(cell.getLabel().getRowIndex(), is(15));
+//        assertThat(cell.getLabel().getColumnIndex(), is(33));
+//        assertThat(cell.getBody().getRowIndex(), is(16));
+//        assertThat(cell.getBody().getColumnIndex(), is(33));
+//        assertThat(cell.getBody().getCellStyle().getFillForegroundColor(), is(IndexedColors.BLUE.getIndex()));
+//    }
 
-        KeyboardCell cell = sut.getKeyboardCell("J", false);
-        assertThat(cell.getLabel().getRowIndex(), is(15));
-        assertThat(cell.getLabel().getColumnIndex(), is(33));
-        assertThat(cell.getBody().getRowIndex(), is(16));
-        assertThat(cell.getBody().getColumnIndex(), is(33));
-        assertThat(cell.getBody().getCellStyle().getFillForegroundColor(), is(IndexedColors.BLUE.getIndex()));
-    }
+//    @Test
+//    public void test_searchBorderedCellToBottom() {
+//        KeyboardCell keyboardCell = sut.getKeyboardCell("`", false);
+//        Cell cell = sut.searchBorderedCellToBottom(keyboardCell.getBody());
+//        assertThat(cell.getRowIndex(), is(12));
+//    }
+//
+//    @Test
+//    public void test_searchBorderedCellToRight() {
+//        KeyboardCell keyboardCell = sut.getKeyboardCell("`", false);
+//        Cell cell = sut.searchBorderedCellToRight(keyboardCell.getBody());
+//        assertThat(cell.getColumnIndex(), is(4));
+//    }
 
 }

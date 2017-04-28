@@ -1,8 +1,7 @@
 package com.kota65535.intellij.plugin.keymap.exporter2.sheet;
 
 import lombok.Getter;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
@@ -24,28 +23,31 @@ public class KeyboardCell {
         this.sheet = sheet;
         this.label = label;
         body = sheet.getRow(label.getRowIndex()+1).getCell(label.getColumnIndex());
-        if (isBodyDivided()) {
-            secondBody = sheet.getRow(label.getRowIndex()+3).getCell(label.getColumnIndex());
+        if (isKeyboardCellDivided()) {
+            CellRangeAddress address = sheet.getMergedRegion(getBodyRegionIndex());
+            secondBody = sheet.getRow(address.getLastRow()+1).getCell(body.getColumnIndex());
         } else {
             secondBody = null;
         }
-
     }
 
-    private boolean isBodyDivided() {
-        return getBodyRangeAddressIndex() == -1;
-    }
-
-    private int getBodyRangeAddressIndex() {
+    private int getBodyRegionIndex() {
         return IntStream.range(0, sheet.getMergedRegions().size())
                 .filter( i -> {
                     CellRangeAddress addr = sheet.getMergedRegions().get(i);
                     return addr.getFirstRow() == body.getRowIndex()
-                            && addr.getLastRow() == body.getRowIndex()+3
-                            && addr.getFirstColumn() == body.getColumnIndex()
-                            && addr.getLastColumn() == body.getColumnIndex()+3;
+                            && addr.getFirstColumn() == body.getColumnIndex();
                 })
                 .findFirst().orElse(-1);
+    }
+
+    private boolean isKeyboardCellDivided() {
+        CellRangeAddress address = sheet.getMergedRegion(getBodyRegionIndex());
+        Cell cell = sheet.getRow(address.getFirstRow()).getCell(address.getFirstColumn());
+        if ( cell.getCellStyle().getBorderBottomEnum() != BorderStyle.DASHED) {
+            return false;
+        }
+        return true;
     }
 
     private void setColor(Cell cell, XSSFColor color) {
@@ -69,19 +71,39 @@ public class KeyboardCell {
     }
 
     public KeyboardCell setBodies(String first, String second) {
-        int removedIndex = getBodyRangeAddressIndex();
 
-        if (removedIndex > -1) {
-            sheet.removeMergedRegion(removedIndex);
+        if (isKeyboardCellDivided()) {
+            body.setCellValue(first);
+            secondBody.setCellValue(second);
+            return this;
         }
 
-        sheet.addMergedRegion(new CellRangeAddress(body.getRowIndex(), body.getRowIndex()+1,
-                body.getColumnIndex(), body.getColumnIndex()+3));
-        sheet.addMergedRegion(new CellRangeAddress(body.getRowIndex()+2, body.getRowIndex()+3,
-                body.getColumnIndex(), body.getColumnIndex()+3));
+        int removedIndex = getBodyRegionIndex();
+        CellRangeAddress address = sheet.getMergedRegion(removedIndex);
 
-        secondBody = sheet.getRow(label.getRowIndex()+3).getCell(label.getColumnIndex());
+        CellRangeAddress firstAddress = new CellRangeAddress(
+                address.getFirstRow(),
+                (address.getFirstRow() + address.getLastRow()) / 2,
+                address.getFirstColumn(),
+                address.getLastColumn());
+        CellRangeAddress secondAddress = new CellRangeAddress(
+                (address.getFirstRow() + address.getLastRow()) / 2 + 1,
+                address.getLastRow(),
+                address.getFirstColumn(),
+                address.getLastColumn());
 
+        sheet.removeMergedRegion(removedIndex);
+
+        sheet.addMergedRegion(firstAddress);
+        sheet.addMergedRegion(secondAddress);
+
+        secondBody = sheet.getRow((address.getFirstRow() + address.getLastRow()) / 2 + 1)
+                .getCell(address.getFirstColumn());
+
+        XSSFCellStyle style = sheet.getWorkbook().createCellStyle();
+        style.cloneStyleFrom(body.getCellStyle());
+        style.setBorderBottom(BorderStyle.DASHED);
+        body.setCellStyle(style);
         body.setCellValue(first);
         secondBody.setCellValue(second);
         return this;

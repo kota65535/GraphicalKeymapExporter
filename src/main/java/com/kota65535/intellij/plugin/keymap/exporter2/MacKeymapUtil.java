@@ -23,8 +23,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -53,10 +55,14 @@ public class MacKeymapUtil {
     }
 
     public static String normalizeKeyText(String keyText) {
-        String result = new String(keyText);
-        for (MacKey v : MacKey.values()) {
+        String result = keyText;
+        EnumSet<MacKey> candidates = Arrays.stream(MacKey.values())
+                .filter( v -> v.getNormalizedString() != null)
+                .collect(Collectors.toCollection( () -> EnumSet.noneOf(MacKey.class)));
+        for (MacKey v : candidates) {
             result = result.replace(v.getOriginalString(), v.getNormalizedString());
         }
+        System.out.printf("%s -> %s\n", keyText, result);
 
         return result;
     }

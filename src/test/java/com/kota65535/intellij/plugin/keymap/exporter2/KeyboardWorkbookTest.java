@@ -31,13 +31,13 @@ public class KeyboardWorkbookTest {
         sut.getSheet(KeyboardSheetType.Ctrl);
     }
 
-    @Test
-    public void test_save() throws Exception {
-        KeyboardSheet sheet = sut.getSheet(KeyboardSheetType.NoMod);
-        sheet.setKeyboardCellWithColor("A", false, "unko",
-                new XSSFColor(IndexedColors.PINK));
-        sut.save("keymap2.xlsx");
-    }
+//    @Test
+//    public void test_save() throws Exception {
+//        KeyboardSheet sheet = sut.getSheet(KeyboardSheetType.NoMod);
+//        sheet.setKeyboardCellWithColor("A", false, "unko",
+//                new XSSFColor(IndexedColors.PINK));
+//        sut.save("keymap2.xlsx");
+//    }
 
     @Test
     public void test_getKeyboardCell() {

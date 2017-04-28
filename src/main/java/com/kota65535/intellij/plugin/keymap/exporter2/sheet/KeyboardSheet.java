@@ -2,10 +2,12 @@ package com.kota65535.intellij.plugin.keymap.exporter2.sheet;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -39,7 +41,7 @@ public class KeyboardSheet {
         if (StringUtil.isEmpty(key)) {
             return null;
         }
-        List<Cell> cells = findAllStringCells(key);
+        List<Cell> cells = findAllStringCells(key, true);
         if (cells.isEmpty()) {
             logger.warn(String.format("Key: '%s' with shift=%s not found", key, shift));
             return null;
@@ -121,7 +123,7 @@ public class KeyboardSheet {
      * @param string value to search
      * @return a list of cells
      */
-    private List<Cell> findAllStringCells(String string) {
+    private List<Cell> findAllStringCells(String string, boolean ignoreCase) {
         List<Cell> matchedCells = new ArrayList<>();
         Iterator<Row> rows = sheet.rowIterator();
         while (rows.hasNext()) {
@@ -131,8 +133,14 @@ public class KeyboardSheet {
                 Cell cell = cells.next();
                 try {
                     String value = cell.getStringCellValue();
-                    if (string.equals(value)) {
-                        matchedCells.add(cell);
+                    if (ignoreCase) {
+                        if (string.toUpperCase().equals(value.toUpperCase())) {
+                            matchedCells.add(cell);
+                        }
+                    } else {
+                        if (string.equals(value)) {
+                            matchedCells.add(cell);
+                        }
                     }
                 } catch (IllegalStateException e) {
                     // Do nothing if not a string cell
@@ -142,13 +150,48 @@ public class KeyboardSheet {
         return matchedCells;
     }
 
+    public Cell searchBorderedCellToBottom(Cell currentCell) {
+        int currentRowIndex = currentCell.getRowIndex();
+        int columnIndex = currentCell.getColumnIndex();
+        while (true) {
+            currentRowIndex++;
+            Cell cell = getCell(currentRowIndex, columnIndex);
+            if (cell == null) {
+                break;
+            }
+            if (cell.getCellStyle().getBorderBottomEnum() != BorderStyle.NONE) {
+                return cell;
+            }
+        }
+        return null;
+    }
+
+    public Cell searchBorderedCellToRight(Cell currentCell) {
+        int currentColumnIndex = currentCell.getColumnIndex();
+        int rowIndex = currentCell.getRowIndex();
+        while (true) {
+            currentColumnIndex++;
+            Cell cell = getCell(rowIndex, currentColumnIndex);
+            if (cell == null) {
+                break;
+            }
+            if (cell.getCellStyle().getBorderRightEnum() != BorderStyle.NONE) {
+                return cell;
+            }
+        }
+
+        return null;
+    }
+
+
     /**
      * find the first cell that have the given string value.
      * @param string value to search
      * @return a cell
      */
     private Cell findFirstStringCell(String string) {
-        List<Cell> result = findAllStringCells(string);
+        List<Cell> result = findAllStringCells(string, true);
         return result.get(0);
     }
+
 }
