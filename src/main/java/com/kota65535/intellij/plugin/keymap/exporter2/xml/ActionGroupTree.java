@@ -20,8 +20,10 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
+import java.awt.*;
 import java.io.StringWriter;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -57,13 +59,13 @@ public class ActionGroupTree {
         }
     }
 
-    public Document createTree(Map<String, IndexedColors> group2color) {
+    public Document createTree(Map<String, Color> group2color) {
         // create group elements with child actions
         actionGroups.forEach(this::createGroupElement);
         // create actions without any parent group
         appendOrphanActionElements();
         // add color attribute to each group
-        group2color.forEach((key, value) -> addColorAttribute(key, value.name()));
+        group2color.forEach((key, value) -> addColorAttribute(key, Integer.toString(value.getRGB())));
 
         return document;
     }
@@ -185,6 +187,7 @@ public class ActionGroupTree {
         if (! shortcut.isEmpty()) {
             element.setAttribute("key", shortcut);
         }
+        element.setAttribute("text", action.getTemplatePresentation().getText());
         return element;
     }
 }

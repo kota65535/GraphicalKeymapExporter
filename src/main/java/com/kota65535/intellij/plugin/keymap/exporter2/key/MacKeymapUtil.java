@@ -13,21 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.kota65535.intellij.plugin.keymap.exporter2;
+package com.kota65535.intellij.plugin.keymap.exporter2.key;
 
-import com.intellij.util.ui.UIUtil;
-import org.bouncycastle.crypto.Mac;
-import org.intellij.lang.annotations.JdkConstants;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Utility class to display action shortcuts in Mac menus

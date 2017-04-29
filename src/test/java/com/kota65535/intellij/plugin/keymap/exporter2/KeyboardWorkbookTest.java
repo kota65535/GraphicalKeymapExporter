@@ -9,6 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.*;
 import java.io.InputStream;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -65,5 +66,16 @@ public class KeyboardWorkbookTest {
         assertThat(cell.getBody().getStringCellValue(), is("jjj"));
     }
 
+    @Test
+    public void test_setKeyboardCellWithColor() throws Exception {
+        sut.setKeyboardCell("8", "jjj", new XSSFColor(Color.RED));
+        KeyboardCell cell = sut.getKeyboardCell("8");
+//        assertThat(cell.getLabel().getRowIndex(), is(15));
+//        assertThat(cell.getLabel().getColumnIndex(), is(33));
+//        assertThat(cell.getBody().getRowIndex(), is(16));
+//        assertThat(cell.getBody().getColumnIndex(), is(33));
+        assertThat(cell.getBody().getStringCellValue(), is("jjj"));
+        sut.save("keymap4.xlsx");
+    }
 
 }

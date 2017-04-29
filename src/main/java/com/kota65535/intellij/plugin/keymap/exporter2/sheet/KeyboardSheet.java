@@ -65,6 +65,15 @@ public class KeyboardSheet {
         }
     }
 
+    public void setKeyboardCell(String key, boolean shift, String value, XSSFColor color) {
+        KeyboardCell keyboardCell = getKeyboardCell(key, shift);
+        if (keyboardCell == null) {
+            logger.warn(String.format("Cannot set key: '%s' with shift=%s", key, shift));
+        } else {
+            keyboardCell.setBody(value, color);
+        }
+    }
+
     public void setKeyboardCell(String key, boolean shift, String first, String second) {
         KeyboardCell keyboardCell = getKeyboardCell(key, shift);
         if (keyboardCell == null) {
@@ -74,6 +83,14 @@ public class KeyboardSheet {
         }
     }
 
+    public void setKeyboardCell(String key, boolean shift, String first, XSSFColor firstColor, String second, XSSFColor secondColor) {
+        KeyboardCell keyboardCell = getKeyboardCell(key, shift);
+        if (keyboardCell == null) {
+            logger.warn(String.format("Cannot set key: '%s' with shift=%s", key, shift));
+        } else {
+            keyboardCell.setBodies(first, firstColor, second, secondColor);
+        }
+    }
 //    public void setKeyboardCellColor(String key, boolean shift, XSSFColor color1, XSSFColor color2) {
 //        KeyboardCell keyboardCell = getKeyboardCell(key, shift);
 //        if (keyboardCell == null) {

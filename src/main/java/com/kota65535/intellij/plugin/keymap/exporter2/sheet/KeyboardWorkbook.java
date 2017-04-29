@@ -1,12 +1,11 @@
 package com.kota65535.intellij.plugin.keymap.exporter2.sheet;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.kota65535.intellij.plugin.keymap.exporter2.MacKeymapUtil;
-import com.kota65535.intellij.plugin.keymap.exporter2.Modifier;
-import com.kota65535.intellij.plugin.keymap.exporter2.Utils;
+import com.kota65535.intellij.plugin.keymap.exporter2.key.MacKeymapUtil;
+import com.kota65535.intellij.plugin.keymap.exporter2.key.Modifier;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import javax.swing.*;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,15 +76,19 @@ public class KeyboardWorkbook {
         return sheet.getKeyboardCell(strokeText, mods.contains(Modifier.SHIFT));
     }
 
-    /**
-     *
-     * @param value
-     */
     public void setKeyboardCell(String strokeText, String value) {
         EnumSet<Modifier> mods = MacKeymapUtil.getModifiers(strokeText);
         KeyboardSheet sheet = getSheet(mods);
         sheet.setKeyboardCell(
                 MacKeymapUtil.normalizeKeyText(MacKeymapUtil.stripModifiers(strokeText)), mods.contains(Modifier.SHIFT), value);
+    }
+
+    public void setKeyboardCell(String strokeText, String value, XSSFColor color) {
+        EnumSet<Modifier> mods = MacKeymapUtil.getModifiers(strokeText);
+        KeyboardSheet sheet = getSheet(mods);
+        sheet.setKeyboardCell(
+                MacKeymapUtil.normalizeKeyText(MacKeymapUtil.stripModifiers(strokeText)),
+                mods.contains(Modifier.SHIFT), value, color);
     }
 
     public void setKeyboardCell(String strokeText, String first, String second) {
@@ -96,6 +99,16 @@ public class KeyboardWorkbook {
                 MacKeymapUtil.normalizeKeyText(MacKeymapUtil.stripModifiers(strokeText)), mods.contains(Modifier.SHIFT), first, second);
     }
 
+    public void setKeyboardCell(String strokeText, String first, XSSFColor firstColor, String second, XSSFColor secondColor) {
+        EnumSet<Modifier> mods = MacKeymapUtil.getModifiers(strokeText);
+        KeyboardSheet sheet = getSheet(mods);
+        System.err.println(strokeText);
+        sheet.setKeyboardCell(
+                MacKeymapUtil.normalizeKeyText(MacKeymapUtil.stripModifiers(strokeText)),
+                mods.contains(Modifier.SHIFT),
+                first, firstColor,
+                second, secondColor);
+    }
 
     public void save(String fileName) throws IOException {
         FileOutputStream os = new FileOutputStream(fileName);

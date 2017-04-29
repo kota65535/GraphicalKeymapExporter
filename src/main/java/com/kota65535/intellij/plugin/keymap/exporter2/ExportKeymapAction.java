@@ -5,6 +5,11 @@ import com.intellij.openapi.keymap.Keymap;
 import com.intellij.openapi.keymap.ex.KeymapManagerEx;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.vcs.VcsShowConfirmationOption;
+import com.intellij.ui.mac.MacMessages;
+import com.intellij.util.ui.ConfirmationDialog;
+import com.intellij.util.ui.UIUtil;
 import com.kota65535.intellij.plugin.keymap.exporter2.xml.ActionGroupTree;
 import org.w3c.dom.Document;
 
@@ -50,8 +55,9 @@ public class ExportKeymapAction extends AnAction {
 
         // Output the keymap xlsx file.
         KeyboardWorkbookWriter writer = new KeyboardWorkbookWriter(KEYBOARD_WORKBOOK_NAME, document,
-                d.getSaveDir() + FILE_NAME);
+                String.format("%s/%s", d.getSaveDir(), FILE_NAME));
         writer.write();
-    }
 
+        MacMessages.getInstance().showOkMessageDialog("Keymap exporter", "Finished", "OK");
+    }
 }

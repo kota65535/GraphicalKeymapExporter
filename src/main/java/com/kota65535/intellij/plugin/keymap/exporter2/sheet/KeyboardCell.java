@@ -59,7 +59,6 @@ public class KeyboardCell {
     }
 
     public KeyboardCell setBody(String content) {
-        body = sheet.getRow(label.getRowIndex()+1).getCell(label.getColumnIndex());
         body.setCellValue(content);
         return this;
     }
@@ -109,7 +108,7 @@ public class KeyboardCell {
         return this;
     }
 
-    public KeyboardCell setBodies(String first, String second, XSSFColor color1, XSSFColor color2) {
+    public KeyboardCell setBodies(String first, XSSFColor color1, String second, XSSFColor color2) {
         setBodies(first, second);
         setColor(body, color1);
         setColor(secondBody, color2);
