@@ -1,25 +1,20 @@
 package com.kota65535.intellij.plugin.keymap.exporter2;
 
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.KeyboardShortcut;
-import com.intellij.openapi.actionSystem.Shortcut;
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.keymap.Keymap;
-import com.intellij.openapi.keymap.KeymapUtil;
 import com.intellij.openapi.keymap.ex.KeymapManagerEx;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.event.*;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ExportKeymapDialog extends DialogWrapper {
     private JPanel myRootPanel;
     private JComboBox keymapComboBox;
+    private TextFieldWithBrowseButton textFieldWithBrowseButton;
     private final Project myProject;
     private KeymapManagerEx manager = KeymapManagerEx.getInstanceEx();
 
@@ -30,6 +25,9 @@ public class ExportKeymapDialog extends DialogWrapper {
 
         // List all keymaps
         Arrays.stream(manager.getAllKeymaps()).forEach( m -> keymapComboBox.addItem(m));
+
+        textFieldWithBrowseButton.addBrowseFolderListener("Save as", "", null,
+                FileChooserDescriptorFactory.createSingleFolderDescriptor());
 
         init();
     }
@@ -49,6 +47,10 @@ public class ExportKeymapDialog extends DialogWrapper {
 
     public Keymap getSelectedKeymap() {
         return (Keymap) keymapComboBox.getSelectedItem();
+    }
+
+    public String getSaveDir() {
+        return textFieldWithBrowseButton.getText();
     }
 
 //    private void createKeymap() {
@@ -80,7 +82,7 @@ public class ExportKeymapDialog extends DialogWrapper {
 //                            description = id;
 //                        }
 //                        String shortcutText = KeymapUtil.getFirstKeyboardShortcutText(id);
-//                        System.out.println(String.format("%s:%s, %s", id, shortcutText, description));
+//                        System.err.println(String.format("%s:%s, %s", id, shortcutText, description));
 //                    }
 //                });
 //            }

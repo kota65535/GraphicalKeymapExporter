@@ -91,7 +91,7 @@ public class KeyboardWorkbook {
     public void setKeyboardCell(String strokeText, String first, String second) {
         EnumSet<Modifier> mods = MacKeymapUtil.getModifiers(strokeText);
         KeyboardSheet sheet = getSheet(mods);
-        System.out.println(strokeText);
+        System.err.println(strokeText);
         sheet.setKeyboardCell(
                 MacKeymapUtil.normalizeKeyText(MacKeymapUtil.stripModifiers(strokeText)), mods.contains(Modifier.SHIFT), first, second);
     }

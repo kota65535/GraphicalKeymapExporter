@@ -37,7 +37,7 @@ public class KeyboardWorkbookWriter {
         try {
             workbook = new KeyboardWorkbook(is);
         } catch (Exception ex) {
-            System.out.println("Failed to load " + fileName);
+            System.err.println("Failed to load " + fileName);
             ex.printStackTrace();
         }
         this.keymap = keymap;
@@ -154,7 +154,7 @@ public class KeyboardWorkbookWriter {
 //                        description = id;
 //                    }
 //                    String shortcutText = KeymapUtil.getFirstKeyboardShortcutText(id);
-//                    System.out.println(String.format("%s:%s, %s", id, shortcutText, description));
+//                    System.err.println(String.format("%s:%s, %s", id, shortcutText, description));
 //                }
 //            });
 //        }

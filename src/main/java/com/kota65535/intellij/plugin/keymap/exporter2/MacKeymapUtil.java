@@ -62,7 +62,7 @@ public class MacKeymapUtil {
         for (MacKey v : candidates) {
             result = result.replace(v.getOriginalString(), v.getNormalizedString());
         }
-        System.out.printf("%s -> %s\n", keyText, result);
+        System.err.printf("%s -> %s\n", keyText, result);
 
         return result;
     }

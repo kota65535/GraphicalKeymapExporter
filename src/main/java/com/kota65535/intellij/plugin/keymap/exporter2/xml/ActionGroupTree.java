@@ -50,20 +50,30 @@ public class ActionGroupTree {
                 .collect(Collectors.toList());
 
         try {
-            document = createXMLDocument("root");
+            document = initXMLDocument("root");
             rootElement = document.getDocumentElement();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    public Document createActionGroupTree(Map<String, IndexedColors> group2color) {
+    public Document createTree(Map<String, IndexedColors> group2color) {
+        // create group elements with child actions
         actionGroups.forEach(this::createGroupElement);
+        // create actions without any parent group
         appendOrphanActionElements();
-
+        // add color attribute to each group
         group2color.forEach((key, value) -> addColorAttribute(key, value.name()));
 
         return document;
+    }
+
+    public void print() {
+        try {
+            System.err.println(createXMLString(document));
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
 
@@ -81,18 +91,7 @@ public class ActionGroupTree {
         }
     }
 
-
-    public void write() {
-        try {
-            System.out.println(createXMLString(document));
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-
-    // メソッド定義
-    private static Document createXMLDocument(String root) throws ParserConfigurationException {
+    private static Document initXMLDocument(String root) throws ParserConfigurationException {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
 
@@ -100,7 +99,6 @@ public class ActionGroupTree {
         return dom.createDocument("", root, null);
     }
 
-    // メソッド定義
     private static String createXMLString(Document document) throws TransformerException {
         StringWriter writer = new StringWriter();
         TransformerFactory factory = TransformerFactory.newInstance();
@@ -142,7 +140,6 @@ public class ActionGroupTree {
         // Append all child actions to group
         childActions.forEach(a -> groupElement.appendChild(createActionElement(a)));
     }
-
 
     private Element findOrCreateElement(String id, String tagName, boolean shouldAppendToRoot) {
         Element element = document.getElementById(id);
