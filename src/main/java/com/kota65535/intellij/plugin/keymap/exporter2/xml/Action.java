@@ -21,7 +21,7 @@ public class Action {
         try {
             this.color = Integer.parseInt(color);
         } catch (NumberFormatException ex) {
-            this.color = 255;
+            this.color = 0xFFFFFF;
         }
 
     }

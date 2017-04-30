@@ -26,7 +26,6 @@ public class ExportKeymapAction extends AnAction {
 
     private static final Logger logger = Logger.getInstance(ExportKeymapAction.class);
 
-    private static final String FILE_NAME = "keymap.xlsx";
 
     @Override
     public void actionPerformed(AnActionEvent e) {
@@ -55,7 +54,7 @@ public class ExportKeymapAction extends AnAction {
 
         // Output the keymap xlsx file.
         KeyboardWorkbookWriter writer = new KeyboardWorkbookWriter(KEYBOARD_WORKBOOK_NAME, document,
-                String.format("%s/%s", d.getSaveDir(), FILE_NAME));
+                String.format("%s/%s", d.getSaveDir(), KEYBOARD_WORKBOOK_NAME));
         writer.write();
 
         MacMessages.getInstance().showOkMessageDialog("Keymap exporter", "Finished", "OK");

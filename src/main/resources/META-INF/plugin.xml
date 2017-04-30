@@ -31,7 +31,7 @@
 
     <actions>
         <action id="KeyMapExporter2.export" class="com.kota65535.intellij.plugin.keymap.exporter2.ExportKeymapAction"
-                text="Export keymap" description="Export specified keymap">
+                text="Export Keymap" description="Export specified keymap">
         <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
     </actions>

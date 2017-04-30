@@ -1,9 +1,14 @@
 package com.kota65535.intellij.plugin.keymap.exporter2;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSortedMap;
+import com.google.common.collect.Ordering;
+import org.apache.commons.collections4.OrderedMap;
 
 import java.awt.*;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * Created by tozawa on 2017/04/17.
@@ -23,8 +28,8 @@ public class Constants {
             .put("RunMenu", new Color(251, 21, 128))
             .put("ToolsMenu", new Color(252, 40, 252))
             .put("VcsGroups", new Color(126, 37, 251))
-            .put("WindowMenu", new Color(0, 0, 0))
-            .put("HelpMenu", new Color(0, 0, 0))
+            .put("WindowMenu", new Color(255, 255, 255))
+            .put("HelpMenu", new Color(255,255, 255))
             .build();
 
     public static final String KEYBOARD_WORKBOOK_NAME = "keymap.xlsx";

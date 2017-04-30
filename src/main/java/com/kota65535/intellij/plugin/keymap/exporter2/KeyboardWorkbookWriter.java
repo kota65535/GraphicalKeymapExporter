@@ -20,6 +20,8 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.kota65535.intellij.plugin.keymap.exporter2.Constants.GROUP_2_COLOR;
+
 /**
  * Created by tozawa on 2017/03/08.
  */
@@ -54,6 +56,10 @@ public class KeyboardWorkbookWriter {
         for (int i = 0; i < nodeList.getLength(); i++) {
             Element elem = (Element) nodeList.item(i);
             String keyStroke = elem.getAttribute("key");
+            // If key is empty, skip it
+            if ( keyStroke.isEmpty() ) {
+                continue;
+            }
             if (key2Actions.get(keyStroke) != null) {
                 key2Actions.get(keyStroke).add(new Action(
                         elem.getAttribute("id"),
@@ -71,24 +77,24 @@ public class KeyboardWorkbookWriter {
     }
 
 
-    /**
-     * if multiple actions are associated with single key, choose only actions that belong to MainMenu group.
-     */
-    private Map<String, List<Action>> getKey2MainActions(int threshold) {
-        Map<String, List<Action>> key2Actions = getKey2Actions();
+    private List<Action> sortActions(List<Action> actions) {
 
-        return key2Actions.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> {
-                            if (entry.getValue().size() > threshold) {
-                                return entry.getValue().stream()
-                                        .filter(a -> isGroupOf(a.getActionId(), "MainMenu"))
-                                        .collect(Collectors.toList());
-                            } else {
-                                return entry.getValue();
-                            }
-                        }));
+        List<Action> sortedActions = new ArrayList<>();
+
+        GROUP_2_COLOR.entrySet().forEach(entry -> {
+            actions.forEach(action -> {
+                if (isGroupOf(action.getActionId(), entry.getKey()) && action.getColor() != 0xFFFFFF) {
+                    sortedActions.add(action);
+                }
+            });
+        });
+        actions.forEach( action -> {
+            if ( ! sortedActions.stream().map(Action::getActionId).collect(Collectors.toList())
+                    .contains(action.getActionId()) ) {
+                sortedActions.add(action);
+            }
+        });
+        return sortedActions.stream().distinct().collect(Collectors.toList());
     }
 
 
@@ -109,11 +115,13 @@ public class KeyboardWorkbookWriter {
 
 
     public void write() {
-        Map<String, List<Action>> key2MainAct = getKey2MainActions(2);
+        Map<String, List<Action>> key2MainAct = getKey2Actions();
 
         key2MainAct.forEach((key, value) -> {
             List<Action> list = new ArrayList<>(value);
-            if (value.size() == 2) {
+            list = sortActions(list);
+
+            if (list.size() >= 2) {
                 workbook.setKeyboardCell(key,
                         list.get(0).getText(),
                         new XSSFColor(new Color(list.get(0).getColor())),
