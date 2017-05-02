@@ -91,6 +91,14 @@ public class KeyboardWorkbook {
                 mods.contains(Modifier.SHIFT), value, color);
     }
 
+    public void setKeyboardCell(String strokeText, String value, XSSFColor color, String comment) {
+        EnumSet<Modifier> mods = MacKeymapUtil.getModifiers(strokeText);
+        KeyboardSheet sheet = getSheet(mods);
+        sheet.setKeyboardCell(
+                MacKeymapUtil.normalizeKeyText(MacKeymapUtil.stripModifiers(strokeText)),
+                mods.contains(Modifier.SHIFT), value, color, comment);
+    }
+
     public void setKeyboardCell(String strokeText, String first, String second) {
         EnumSet<Modifier> mods = MacKeymapUtil.getModifiers(strokeText);
         KeyboardSheet sheet = getSheet(mods);
@@ -108,6 +116,18 @@ public class KeyboardWorkbook {
                 mods.contains(Modifier.SHIFT),
                 first, firstColor,
                 second, secondColor);
+    }
+
+    public void setKeyboardCell(String strokeText, String first, XSSFColor firstColor, String firstComment,
+                                String second, XSSFColor secondColor, String secondComment) {
+        EnumSet<Modifier> mods = MacKeymapUtil.getModifiers(strokeText);
+        KeyboardSheet sheet = getSheet(mods);
+        System.err.println(strokeText);
+        sheet.setKeyboardCell(
+                MacKeymapUtil.normalizeKeyText(MacKeymapUtil.stripModifiers(strokeText)),
+                mods.contains(Modifier.SHIFT),
+                first, firstColor, firstComment,
+                second, secondColor, secondComment);
     }
 
     public void save(String fileName) throws IOException {

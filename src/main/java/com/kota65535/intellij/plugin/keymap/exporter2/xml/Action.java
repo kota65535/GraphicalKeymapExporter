@@ -13,11 +13,13 @@ import java.util.List;
 public class Action {
     private String actionId;
     private String text;
+    private String description;
     private int color;
 
-    public Action(String actionId, String text, String color) {
+    public Action(String actionId, String text, String description, String color) {
         this.actionId = actionId;
         this.text = text;
+        this.description = description;
         try {
             this.color = Integer.parseInt(color);
         } catch (NumberFormatException ex) {

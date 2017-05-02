@@ -78,4 +78,15 @@ public class KeyboardWorkbookTest {
         sut.save("keymap4.xlsx");
     }
 
+    @Test
+    public void test_setKeyboardCellWithColorAndComment() throws Exception {
+        sut.setKeyboardCell("8", "jjj", new XSSFColor(Color.RED), "The quick brown fox jumps over the lazy dog");
+        KeyboardCell cell = sut.getKeyboardCell("8");
+//        assertThat(cell.getLabel().getRowIndex(), is(15));
+//        assertThat(cell.getLabel().getColumnIndex(), is(33));
+//        assertThat(cell.getBody().getRowIndex(), is(16));
+//        assertThat(cell.getBody().getColumnIndex(), is(33));
+        assertThat(cell.getBody().getStringCellValue(), is("jjj"));
+        sut.save("keymap4.xlsx");
+    }
 }

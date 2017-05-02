@@ -57,12 +57,15 @@ public class KeyboardWorkbookWriter {
                 workbook.setKeyboardCell(key,
                         list.get(0).getText(),
                         new XSSFColor(new Color(list.get(0).getColor())),
+                        list.get(0).getDescription(),
                         list.get(1).getText(),
-                        new XSSFColor(new Color(list.get(1).getColor())));
+                        new XSSFColor(new Color(list.get(1).getColor())),
+                        list.get(1).getDescription());
             } else if (value.size() == 1) {
                 workbook.setKeyboardCell(key,
                         list.get(0).getText(),
-                        new XSSFColor(new Color(list.get(0).getColor())));
+                        new XSSFColor(new Color(list.get(0).getColor())),
+                        list.get(0).getDescription());
             }
         });
 
@@ -94,11 +97,13 @@ public class KeyboardWorkbookWriter {
                 key2Actions.get(keyStroke).add(new Action(
                         elem.getAttribute("id"),
                         elem.getAttribute("text"),
+                        elem.getAttribute("description"),
                         elem.getAttribute("color")));
             } else {
                 key2Actions.put(keyStroke, Lists.newArrayList(new Action(
                         elem.getAttribute("id"),
                         elem.getAttribute("text"),
+                        elem.getAttribute("description"),
                         elem.getAttribute("color"))));
             }
         }

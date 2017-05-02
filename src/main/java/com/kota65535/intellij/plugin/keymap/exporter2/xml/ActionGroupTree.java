@@ -215,6 +215,7 @@ public class ActionGroupTree {
             text = text.replace("...", "");
         }
         element.setAttribute("text", text);
+        element.setAttribute("description", action.getTemplatePresentation().getDescription());
         return element;
     }
 }

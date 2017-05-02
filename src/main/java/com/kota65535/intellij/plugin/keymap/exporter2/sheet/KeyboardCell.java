@@ -1,5 +1,6 @@
 package com.kota65535.intellij.plugin.keymap.exporter2.sheet;
 
+import com.intellij.openapi.util.text.StringUtil;
 import lombok.Getter;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -39,6 +40,13 @@ public class KeyboardCell {
     public KeyboardCell setBody(String content, XSSFColor color) {
         setBody(content);
         setColor(body, color);
+        return this;
+    }
+
+    public KeyboardCell setBody(String content, XSSFColor color, String comment) {
+        setBody(content);
+        setColor(body, color);
+        setComment(body, comment);
         return this;
     }
 
@@ -88,6 +96,16 @@ public class KeyboardCell {
         return this;
     }
 
+    public KeyboardCell setBodies(String first, XSSFColor color1, String comment1,
+                                  String second, XSSFColor color2, String comment2) {
+        setBodies(first, second);
+        setColor(body, color1);
+        setColor(secondBody, color2);
+        setComment(body, comment1);
+        setComment(secondBody, comment2);
+        return this;
+    }
+
     private int getBodyRegionIndex() {
         return IntStream.range(0, sheet.getMergedRegions().size())
                 .filter( i -> {
@@ -113,6 +131,24 @@ public class KeyboardCell {
         style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         style.setFillForegroundColor(color);
         cell.setCellStyle(style);
+    }
+
+    private void setComment(Cell cell, String string) {
+        if (StringUtil.isEmpty(string)) return;
+        CreationHelper helper = sheet.getWorkbook().getCreationHelper();
+        Drawing drawing = sheet.createDrawingPatriarch();
+        ClientAnchor anchor = drawing.createAnchor(100, 100, 100, 100,
+                cell.getColumnIndex(), cell.getRowIndex(),
+                cell.getColumnIndex()+7, cell.getRowIndex()+2);
+        Comment comment = drawing.createCellComment(anchor);
+
+        Font font = sheet.getWorkbook().createFont();
+        font.setFontName("Calibri");
+        font.setFontHeightInPoints((short)18);
+        RichTextString richTextString = helper.createRichTextString(string);
+        richTextString.applyFont(font);
+        comment.setString(richTextString);
+        cell.setCellComment(comment);
     }
 
 }
