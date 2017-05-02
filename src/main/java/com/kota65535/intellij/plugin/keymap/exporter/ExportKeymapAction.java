@@ -50,7 +50,7 @@ public class ExportKeymapAction extends AnAction {
 
         // Output the keymap xlsx file.
         KeyboardWorkbookWriter writer = new KeyboardWorkbookWriter(KEYBOARD_WORKBOOK_NAME, document,
-                String.format("%s/%s", d.getSaveDir(), KEYBOARD_WORKBOOK_NAME));
+                String.format("%s/%s", d.getSavedDir(), d.getSavedFileName()));
         writer.write();
 
         MacMessages.getInstance().showOkMessageDialog("Keymap exporter", "Finished", "OK");
