@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 
 /**
  * Created by tozawa on 2017/04/16.
- */
+  */
 @Getter
 public class KeyboardCell {
     XSSFSheet sheet;
@@ -29,33 +29,6 @@ public class KeyboardCell {
         } else {
             secondBody = null;
         }
-    }
-
-    private int getBodyRegionIndex() {
-        return IntStream.range(0, sheet.getMergedRegions().size())
-                .filter( i -> {
-                    CellRangeAddress addr = sheet.getMergedRegions().get(i);
-                    return addr.getFirstRow() == body.getRowIndex()
-                            && addr.getFirstColumn() == body.getColumnIndex();
-                })
-                .findFirst().orElse(-1);
-    }
-
-    private boolean isKeyboardCellDivided() {
-        CellRangeAddress address = sheet.getMergedRegion(getBodyRegionIndex());
-        Cell cell = sheet.getRow(address.getFirstRow()).getCell(address.getFirstColumn());
-        if ( cell.getCellStyle().getBorderBottomEnum() != BorderStyle.DASHED) {
-            return false;
-        }
-        return true;
-    }
-
-    private void setColor(Cell cell, XSSFColor color) {
-        XSSFCellStyle style = sheet.getWorkbook().createCellStyle();
-        style.cloneStyleFrom(cell.getCellStyle());
-        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-        style.setFillForegroundColor(color);
-        cell.setCellStyle(style);
     }
 
     public KeyboardCell setBody(String content) {
@@ -114,4 +87,32 @@ public class KeyboardCell {
         setColor(secondBody, color2);
         return this;
     }
+
+    private int getBodyRegionIndex() {
+        return IntStream.range(0, sheet.getMergedRegions().size())
+                .filter( i -> {
+                    CellRangeAddress addr = sheet.getMergedRegions().get(i);
+                    return addr.getFirstRow() == body.getRowIndex()
+                            && addr.getFirstColumn() == body.getColumnIndex();
+                })
+                .findFirst().orElse(-1);
+    }
+
+    private boolean isKeyboardCellDivided() {
+        CellRangeAddress address = sheet.getMergedRegion(getBodyRegionIndex());
+        Cell cell = sheet.getRow(address.getFirstRow()).getCell(address.getFirstColumn());
+        if ( cell.getCellStyle().getBorderBottomEnum() != BorderStyle.DASHED) {
+            return false;
+        }
+        return true;
+    }
+
+    private void setColor(Cell cell, XSSFColor color) {
+        XSSFCellStyle style = sheet.getWorkbook().createCellStyle();
+        style.cloneStyleFrom(cell.getCellStyle());
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        style.setFillForegroundColor(color);
+        cell.setCellStyle(style);
+    }
+
 }

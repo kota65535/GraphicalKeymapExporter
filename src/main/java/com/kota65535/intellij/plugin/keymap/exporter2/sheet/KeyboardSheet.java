@@ -91,39 +91,6 @@ public class KeyboardSheet {
             keyboardCell.setBodies(first, firstColor, second, secondColor);
         }
     }
-//    public void setKeyboardCellColor(String key, boolean shift, XSSFColor color1, XSSFColor color2) {
-//        KeyboardCell keyboardCell = getKeyboardCell(key, shift);
-//        if (keyboardCell == null) {
-//            logger.warn(String.format("Cannot set key color: '%s' with shift=%s", key, shift));
-//        } else {
-//            keyboardCell.setBodies()
-//            Cell cell = keyboardCell.getBody();
-//            XSSFCellStyle style = sheet.getWorkbook().createCellStyle();
-//            style.cloneStyleFrom(cell.getCellStyle());
-//            style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-//            style.setFillForegroundColor(color1);
-//            cell.setCellStyle(style);
-//            cell = keyboardCell.getSecondBody();
-//            style = sheet.getWorkbook().createCellStyle();
-//            style.cloneStyleFrom(cell.getCellStyle());
-//            style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-//            style.setFillForegroundColor(color2);
-//            cell.setCellStyle(style);
-//        }
-//    }
-//
-//    /**
-//     * Set value and color for the cell of the key.
-//     * @param key the key
-//     * @param shift whether shift key is present
-//     * @param value the value
-//     * @param color the color
-//     */
-//    public void setKeyboardCellWithColor(String key, boolean shift, String value, XSSFColor color) {
-//        setKeyboardCell(key, shift, value);
-//        setKeyboardCellColor(key, shift, color);
-//    }
-
 
     /**
      * get the cell of the given position.

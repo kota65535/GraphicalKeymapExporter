@@ -24,6 +24,8 @@ import java.awt.*;
 import java.io.StringWriter;
 import java.util.*;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -66,7 +68,8 @@ public class ActionGroupTree {
         appendOrphanActionElements();
         // add color attribute to each group
         group2color.forEach((key, value) -> addColorAttribute(key, Integer.toString(value.getRGB())));
-
+        // add color attribute to orphan actions
+        addColorAttributeToOrphans("Activate.*Window", 0x33CCFF);
         return document;
     }
 
@@ -173,6 +176,26 @@ public class ActionGroupTree {
         }
         actionIds.forEach( aid -> rootElement.appendChild(
                 createActionElement(actionManager.getAction(aid))));
+        // add color attribute for orphan actions
+    }
+
+    private void addColorAttributeToOrphans(String regex, int color) {
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        String expression = String.format("/root//action");
+        try {
+            NodeList nodes = (NodeList) xpath.evaluate(expression, document, XPathConstants.NODESET);
+            Pattern pattern = Pattern.compile(regex);
+            for( int i = 0 ; i < nodes.getLength() ; ++i ) {
+                Element elem = (Element) nodes.item(i);
+                Matcher m = pattern.matcher(elem.getAttribute("id"));
+                if (m.find()) {
+                    elem.setAttribute("color", String.valueOf(color));
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     private Element createActionElement(AnAction action) {
@@ -187,7 +210,11 @@ public class ActionGroupTree {
         if (! shortcut.isEmpty()) {
             element.setAttribute("key", shortcut);
         }
-        element.setAttribute("text", action.getTemplatePresentation().getText());
+        String text = action.getTemplatePresentation().getText();
+        if (text != null) {
+            text = text.replace("...", "");
+        }
+        element.setAttribute("text", text);
         return element;
     }
 }

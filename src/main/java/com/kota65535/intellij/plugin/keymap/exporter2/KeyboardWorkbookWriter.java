@@ -46,12 +46,42 @@ public class KeyboardWorkbookWriter {
     }
 
 
+    public void write() {
+        Map<String, List<Action>> key2MainAct = getKey2Actions();
+
+        key2MainAct.forEach((key, value) -> {
+            List<Action> list = new ArrayList<>(value);
+            list = sortActions(list);
+
+            if (list.size() >= 2 ) {
+                workbook.setKeyboardCell(key,
+                        list.get(0).getText(),
+                        new XSSFColor(new Color(list.get(0).getColor())),
+                        list.get(1).getText(),
+                        new XSSFColor(new Color(list.get(1).getColor())));
+            } else if (value.size() == 1) {
+                workbook.setKeyboardCell(key,
+                        list.get(0).getText(),
+                        new XSSFColor(new Color(list.get(0).getColor())));
+            }
+        });
+
+        try {
+            workbook.save(outputFileName);
+            logger.info(String.format("Successfully print file %s", outputFileName));
+        } catch (IOException ex) {
+            logger.error(String.format("Failed to print file", outputFileName), ex);
+        }
+    }
+
+
     /**
      * create key to action-id map from XML document.
      * @return
      */
     private Map<String, List<Action>> getKey2Actions() {
         Map<String, List<Action>> key2Actions = new HashMap<>();
+        // get all action elements
         NodeList nodeList = document.getElementsByTagName("action");
         for (int i = 0; i < nodeList.getLength(); i++) {
             Element elem = (Element) nodeList.item(i);
@@ -81,16 +111,20 @@ public class KeyboardWorkbookWriter {
 
         List<Action> sortedActions = new ArrayList<>();
 
-        GROUP_2_COLOR.entrySet().forEach(entry -> {
-            actions.forEach(action -> {
-                if (isGroupOf(action.getActionId(), entry.getKey()) && action.getColor() != 0xFFFFFF) {
-                    sortedActions.add(action);
-                }
-            });
-        });
+        // 先頭に近いグループに属するActionが優先される
+        GROUP_2_COLOR.forEach((key, value) -> actions.forEach(action -> {
+            List<String> sortedTexts = sortedActions.stream().map(Action::getText).collect(Collectors.toList());
+            // 同じテキストのActionがすでに存在する場合は追加しない（重複を排除）
+            if (isGroupOf(action.getActionId(), key)
+                    && ! sortedTexts.contains(action.getText())
+                    && action.getColor() != 0xFFFFFF) {
+                sortedActions.add(action);
+            }
+        }));
+        // 上で追加しそこなったのを追加
         actions.forEach( action -> {
-            if ( ! sortedActions.stream().map(Action::getActionId).collect(Collectors.toList())
-                    .contains(action.getActionId()) ) {
+            if ( ! sortedActions.stream().map(Action::getText).collect(Collectors.toList())
+                    .contains(action.getText()) ) {
                 sortedActions.add(action);
             }
         });
@@ -114,32 +148,5 @@ public class KeyboardWorkbookWriter {
     }
 
 
-    public void write() {
-        Map<String, List<Action>> key2MainAct = getKey2Actions();
-
-        key2MainAct.forEach((key, value) -> {
-            List<Action> list = new ArrayList<>(value);
-            list = sortActions(list);
-
-            if (list.size() >= 2) {
-                workbook.setKeyboardCell(key,
-                        list.get(0).getText(),
-                        new XSSFColor(new Color(list.get(0).getColor())),
-                        list.get(1).getText(),
-                        new XSSFColor(new Color(list.get(1).getColor())));
-            } else if (value.size() == 1) {
-                workbook.setKeyboardCell(key,
-                        list.get(0).getText(),
-                        new XSSFColor(new Color(list.get(0).getColor())));
-            }
-        });
-
-        try {
-            workbook.save(outputFileName);
-            logger.info(String.format("Successfully print file %s", outputFileName));
-        } catch (IOException ex) {
-            logger.error(String.format("Failed to print file", outputFileName), ex);
-        }
-    }
 }
 

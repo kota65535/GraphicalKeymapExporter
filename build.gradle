@@ -24,6 +24,7 @@ dependencies {
     compile(group: 'org.apache.poi', name: 'poi-ooxml', version: '3.16-beta2') {
         exclude group: 'stax', module: 'stax-api'
     }
+    compile group: 'net.sf.saxon', name: 'Saxon-HE', version: '9.7.0-18'
     compileOnly "org.projectlombok:lombok:1.16.16"
     testCompile 'junit:junit:4.12'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
