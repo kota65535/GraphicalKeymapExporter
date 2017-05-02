@@ -1,10 +1,11 @@
 <idea-plugin version="2">
-    <id>com.kota65535.intellij.plugin.keymap.exporter2</id>
-    <name>KeymapExporter2</name>
+    <id>com.kota65535.intellij.plugin.keymap.exporter</id>
+    <name>GraphicalKeymapExporter</name>
     <version>1.0</version>
-    <vendor email="kota65535@gmail.com" url="https://github.com/kota65535/KeymapExporter2">kota65535</vendor>
+    <vendor email="kota65535@gmail.com" url="https://github.com/kota65535/GraphicalKeymapExporter">kota65535</vendor>
 
     <description><![CDATA[
+    <p>Export specified keymap as a graphical cheet sheet in a Excel workbook format.</p>
     ]]></description>
 
     <change-notes><![CDATA[
@@ -30,7 +31,7 @@
     </project-components>
 
     <actions>
-        <action id="KeyMapExporter2.export" class="com.kota65535.intellij.plugin.keymap.exporter2.ExportKeymapAction"
+        <action id="GraphicalKeymapExporter.export" class="com.kota65535.intellij.plugin.keymap.exporter.ExportKeymapAction"
                 text="Export Keymap" description="Export specified keymap">
         <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>

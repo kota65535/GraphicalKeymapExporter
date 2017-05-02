@@ -1,10 +1,9 @@
-package com.kota65535.intellij.plugin.keymap.exporter2.xml;
+package com.kota65535.intellij.plugin.keymap.exporter.xml;
 
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.keymap.KeymapUtil;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.w3c.dom.*;
 
 import javax.annotation.Nonnull;

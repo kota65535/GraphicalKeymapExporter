@@ -1,20 +1,16 @@
-package com.kota65535.intellij.plugin.keymap.exporter2;
+package com.kota65535.intellij.plugin.keymap.exporter;
 
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.keymap.Keymap;
 import com.intellij.openapi.keymap.ex.KeymapManagerEx;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.vcs.VcsShowConfirmationOption;
 import com.intellij.ui.mac.MacMessages;
-import com.intellij.util.ui.ConfirmationDialog;
-import com.intellij.util.ui.UIUtil;
-import com.kota65535.intellij.plugin.keymap.exporter2.xml.ActionGroupTree;
+import com.kota65535.intellij.plugin.keymap.exporter.xml.ActionGroupTree;
 import org.w3c.dom.Document;
 
-import static com.kota65535.intellij.plugin.keymap.exporter2.Constants.GROUP_2_COLOR;
-import static com.kota65535.intellij.plugin.keymap.exporter2.Constants.KEYBOARD_WORKBOOK_NAME;
+import static com.kota65535.intellij.plugin.keymap.exporter.Constants.GROUP_2_COLOR;
+import static com.kota65535.intellij.plugin.keymap.exporter.Constants.KEYBOARD_WORKBOOK_NAME;
 
 /**
  * Created by tozawa on 2017/03/04.

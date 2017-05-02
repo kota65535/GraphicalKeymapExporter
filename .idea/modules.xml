@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/KeymapExporter2.iml" filepath="$PROJECT_DIR$/.idea/modules/KeymapExporter2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/KeymapExporter2_main.iml" filepath="$PROJECT_DIR$/.idea/modules/KeymapExporter2_main.iml" group="KeymapExporter2" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/KeymapExporter2_test.iml" filepath="$PROJECT_DIR$/.idea/modules/KeymapExporter2_test.iml" group="KeymapExporter2" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GraphicalKeymapExporter.iml" filepath="$PROJECT_DIR$/.idea/modules/GraphicalKeymapExporter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GraphicalKeymapExporter_main.iml" filepath="$PROJECT_DIR$/.idea/modules/GraphicalKeymapExporter_main.iml" group="GraphicalKeymapExporter" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/GraphicalKeymapExporter_test.iml" filepath="$PROJECT_DIR$/.idea/modules/GraphicalKeymapExporter_test.iml" group="GraphicalKeymapExporter" />
     </modules>
   </component>
 </project>

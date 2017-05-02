@@ -1,8 +1,8 @@
-package com.kota65535.intellij.plugin.keymap.exporter2.sheet;
+package com.kota65535.intellij.plugin.keymap.exporter.sheet;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.kota65535.intellij.plugin.keymap.exporter2.key.MacKeymapUtil;
-import com.kota65535.intellij.plugin.keymap.exporter2.key.Modifier;
+import com.kota65535.intellij.plugin.keymap.exporter.key.MacKeymapUtil;
+import com.kota65535.intellij.plugin.keymap.exporter.key.Modifier;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 

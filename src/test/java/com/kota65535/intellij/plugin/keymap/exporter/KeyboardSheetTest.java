@@ -1,10 +1,8 @@
-package com.kota65535.intellij.plugin.keymap.exporter2;
+package com.kota65535.intellij.plugin.keymap.exporter;
 
-import com.kota65535.intellij.plugin.keymap.exporter2.sheet.KeyboardCell;
-import com.kota65535.intellij.plugin.keymap.exporter2.sheet.KeyboardSheet;
+import com.kota65535.intellij.plugin.keymap.exporter.sheet.KeyboardCell;
+import com.kota65535.intellij.plugin.keymap.exporter.sheet.KeyboardSheet;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.IndexedColors;
-import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Before;
 import org.junit.Test;

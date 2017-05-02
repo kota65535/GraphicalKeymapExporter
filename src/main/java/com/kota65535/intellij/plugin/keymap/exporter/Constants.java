@@ -1,14 +1,9 @@
-package com.kota65535.intellij.plugin.keymap.exporter2;
+package com.kota65535.intellij.plugin.keymap.exporter;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSortedMap;
-import com.google.common.collect.Ordering;
-import org.apache.commons.collections4.OrderedMap;
 
 import java.awt.*;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.SortedMap;
 
 /**
  * Created by tozawa on 2017/04/17.

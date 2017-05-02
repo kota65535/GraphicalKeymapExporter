@@ -10,10 +10,17 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 intellij {
     version '171.4073.35'
-    pluginName 'KeymapExporter2'
+    pluginName 'GraphicalKeymapExporter'
+//    updateSinceUntilBuild false
+//    downloadSources Boolean.valueOf(downloadIdeaSources)
+
+    publish {
+        username publishUsername
+        password publishPassword
+    }
 }
 
-group 'com.kota65535.intellij.plugin.keymap.exporter2'
+group 'com.kota65535.intellij.plugin.keymap.exporter'
 version '1.0'
 
 repositories {

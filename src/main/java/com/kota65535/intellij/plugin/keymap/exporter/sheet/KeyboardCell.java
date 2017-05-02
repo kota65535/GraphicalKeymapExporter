@@ -1,4 +1,4 @@
-package com.kota65535.intellij.plugin.keymap.exporter2.sheet;
+package com.kota65535.intellij.plugin.keymap.exporter.sheet;
 
 import com.intellij.openapi.util.text.StringUtil;
 import lombok.Getter;

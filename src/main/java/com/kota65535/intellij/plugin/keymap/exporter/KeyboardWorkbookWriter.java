@@ -1,9 +1,9 @@
-package com.kota65535.intellij.plugin.keymap.exporter2;
+package com.kota65535.intellij.plugin.keymap.exporter;
 
 import com.google.common.collect.Lists;
 import com.intellij.openapi.diagnostic.Logger;
-import com.kota65535.intellij.plugin.keymap.exporter2.xml.Action;
-import com.kota65535.intellij.plugin.keymap.exporter2.sheet.KeyboardWorkbook;
+import com.kota65535.intellij.plugin.keymap.exporter.xml.Action;
+import com.kota65535.intellij.plugin.keymap.exporter.sheet.KeyboardWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.kota65535.intellij.plugin.keymap.exporter2.Constants.GROUP_2_COLOR;
+import static com.kota65535.intellij.plugin.keymap.exporter.Constants.GROUP_2_COLOR;
 
 /**
  * Created by tozawa on 2017/03/08.

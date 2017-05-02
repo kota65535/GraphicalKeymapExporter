@@ -1,4 +1,4 @@
-package com.kota65535.intellij.plugin.keymap.exporter2.key;
+package com.kota65535.intellij.plugin.keymap.exporter.key;
 
 /**
  * Created by tozawa on 2017/04/24.
